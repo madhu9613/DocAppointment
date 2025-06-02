@@ -22,9 +22,11 @@ const Myappointment = () => {
                   <p className='text-xs'>{item.address.line2}</p>
                   <p className='text-xs mt-1'><span className='text-sm text-neutral-800 font-medium'>Date & Time:</span>25,july,2024 |8.30 </p>
                 </div>
-                <div className='flex flex-col justify-end gap-2 items-center'>
-                  <button className='text-sm text-stone-500 text-center sm:min-w-10/12 py-2 px-6 border rounded hover:bg-primary hover:text-white transition-all duration-500 cursor-pointer'>Pay Online</button>
-                  <button className='text-sm text-stone-500 text-center sm:min-w-10/12 py-2 px-6 border rounded hover:bg-red-600 hover:text-white transition-all duration-500 cursor-pointer'>Cancel Appointment</button>
+                <div className='sm:hidden'></div>
+                <div className='flex flex-col justify-end-safe gap-2'>
+                  
+                  <button className='w-[200px]  text-sm text-stone-500 text-center sm:min-w-10/12 py-2 px-6 border rounded hover:bg-primary hover:text-white transition-all duration-500 cursor-pointer   '>Pay Online</button>
+                  <button className='w-[200px]  text-sm text-stone-500 text-center sm:min-w-10/12 py-2 px-6 border rounded hover:bg-red-600 hover:text-white transition-all duration-500 cursor-pointer'>Cancel Appointment</button>
                 </div>
 
 
