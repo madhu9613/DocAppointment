@@ -1,5 +1,5 @@
 import mongoose  from "mongoose";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcrypt"
 const doctorSchema=new mongoose.Schema({
 
     name:{type:String,
@@ -59,7 +59,10 @@ const doctorSchema=new mongoose.Schema({
    }
 
 
-},{minimize:false})
+},{minimize:false,
+      timestamps: true
+
+})
 
 doctorSchema.pre("save",async function (next) {
    if(!this.isModified("password")) return next() ;
