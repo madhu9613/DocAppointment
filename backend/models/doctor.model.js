@@ -59,7 +59,10 @@ const doctorSchema=new mongoose.Schema({
    }
 
 
-},{minimize:false})
+},{minimize:false,
+      timestamps: true
+
+})
 
 doctorSchema.pre("save",async function (next) {
    if(!this.isModified("password")) return next() ;
