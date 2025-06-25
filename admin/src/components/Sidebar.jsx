@@ -14,7 +14,7 @@ const Sidebar = () => {
   ]
 
   return (
-    <div className="min-h-screen w-50  bg-white border-r border-gray-300 px-2 py-5">
+    <div className="min-h-screen min-w-50  bg-white border-r border-gray-300 px-2 py-5">
       {aToken && (
         <ul className="text-[#515151] space-y-1">
           {navItems.map((item, index) => (
