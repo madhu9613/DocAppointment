@@ -59,8 +59,16 @@ const {data}=await axios.post(backendURL+'/api/admin/add-doctor',formData,
 )
 
 if(data.success)
-{
-    toast.success(data.message)
+{ toast.success(data.message)
+    setAbout('')
+    setAddress1('')
+    setDegree('')
+    setDocimg(false)
+    setEmail('')
+    setExperience('')
+    setName('')
+    setPassword('')
+   
 }
 else{
     toast.error(data.message)
@@ -68,6 +76,9 @@ else{
 
         } catch (error) {
 
+
+
+             toast.error(error.message)
             console.log(error);
             
         }
@@ -76,7 +87,7 @@ else{
 
   
   return (
-    <form onSubmit={onSubmitHandler} className="w-full m-5" action="">
+    <form onSubmit={onSubmitHandler} className="w-full m-5 text-gray-600" action="">
       <p className="text-2xl font-semibold mb-4 text-primary">Add Doctor</p>
 
       <div className="bg-white px-8 py-3 w-full max-w-4xl max-h-[80vh] overflow-y-scroll rounded-lg shadow">
@@ -96,7 +107,7 @@ else{
             accept="image/*"
             onChange={(e) => setDocimg(e.target.files[0])}
           />
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 border-gray-300">
             Upload doctor <br /> Picture
           </p>
         </div>
