@@ -4,7 +4,7 @@ import { AppContext } from '../context/AppContext';
 
 const Doctors = () => {
   const { speciality } = useParams();
-  console.log(speciality);
+
   
   const { doctors } = useContext(AppContext);
   const [Filterdoc, SetFilterdoc] = useState([]);
@@ -61,10 +61,13 @@ const Doctors = () => {
             <div onClick={()=>(navigate(`/appointment/${item._id}`))} key={index} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-300' >
         
               <img src={item.image} alt="" className='bg-blue-50' />
-              <div className='flex items-center gap-2 text-sm text-green-500'>
-                <p className='w-2 h-2 bg-green-500 rounded-full'></p>
-                <p>Available</p>
-              </div>
+             <div className="flex items-center gap-2 text-sm mt-2">
+              <div className={`w-2 h-2 rounded-full ${item.availlable ? 'bg-green-500' : 'bg-red-400'}`}></div>
+              <p className={item.availlable ? 'text-green-500' : 'text-red-500'}>
+                {item.availlable ? 'Available' : 'Unavailable'}
+              </p>
+                
+            </div>
               <p className='text-gray-900 text-lg font-medium'>{item.name}</p>
               <p className='text-gray-500 text-sm'>{item.speciality}</p>
             </div>
