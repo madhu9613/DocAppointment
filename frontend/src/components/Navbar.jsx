@@ -1,12 +1,18 @@
 import React, { useState } from 'react'
 import { assets } from '../assets/assets_frontend/assets.js'
 import { Navigate, NavLink, useNavigate } from 'react-router-dom'
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext.jsx';
 const Navbar = () => {
      const navigate = useNavigate();
 
      const [showMenu, setShowMenu] = useState(false);
-     const [token, Settoken] = useState(true);
-
+     const {token,setToken,userData,img}=useContext(AppContext)
+    
+     const logout=()=>{
+          setToken(false)
+          localStorage.removeItem('token')
+     }
      return (
 
           <div className='flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400'>
@@ -36,13 +42,13 @@ const Navbar = () => {
                          token
                               ?
                               <div className='flex items-center gap-2 cursor-pointer group relative'>
-                                   <img className='w-8 rounded-full ' src={assets.profile_pic} alt="" />
+                                   <img className='w-8 rounded-full ' src={img} alt="" />
                                    <img className='w-2.5' src={assets.dropdown_icon} alt="" />
                                    <div className='absolute top-0 right-0 pt-16 text-base font-medium text-gray-500 z-20  hidden group-hover:block'>
                                         <div className='min-w-48 bg-stone-100 flex flex-col gap-4 p-4 '>
                                              <p onClick={() => navigate('/myprofile')} className='hover:text-black cursor-pointer'>My Profile</p>
                                              <p onClick={() => navigate('/myappointment')} className='hover:text-black cursor-pointer'>My Appointment</p>
-                                             <p onClick={() => Settoken(false)} className='hover:text-black cursor-pointer'>Logout</p>
+                                             <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>
                                         </div>
                                    </div>
                               </div>
