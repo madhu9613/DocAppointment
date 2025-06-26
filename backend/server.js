@@ -4,6 +4,8 @@ import 'dotenv/config'
 import ConnectDb from "./config/db.js"
 import connectCloudinary from "./config/cloudinary.js"
 import adminRouter from "./routes/admin.route.js"
+import doctorRouter from "./routes/doctor.route.js"
+import userRouter from "./routes/user.route.js"
 
 
 //app config
@@ -17,8 +19,8 @@ app.use(cors())
 
 app.use('/api/admin',adminRouter)
 //localhost:4000/api/admin/add-doctor
-
-
+app.use('/api/doctor',doctorRouter)
+app.use('/api/user',userRouter)
 
 const port=process.env.PORT ||8000
 

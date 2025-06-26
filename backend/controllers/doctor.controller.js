@@ -1,49 +1,64 @@
 import doctorModel from "../models/doctor.model.js";
 import mongoose from "mongoose";
 
-
-const changeAvailbility=async(req,res)=>{
+const changeAvailbility = async (req, res) => {
     try {
-        
-       const {docID}=req.body
 
-       if (!mongoose.Types.ObjectId.isValid(docID)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid doctor ID format",
-      });
-    }
+        const { docID } = req.body
 
-       const docData=await doctorModel.findById(docID)
+        if (!mongoose.Types.ObjectId.isValid(docID)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid doctor ID format",
+            });
+        }
 
-       if(!docData)
-       {
-       return res.json({
-            success:false,
-            message:"Doctor with this id doesnot Exist please add doctor first"
+        const docData = await doctorModel.findById(docID)
+
+        if (!docData) {
+            return res.json({
+                success: false,
+                message: "Doctor with this id doesnot Exist please add doctor first"
+            })
+        }
+        await doctorModel.findByIdAndUpdate(docID, {
+            availlable: !docData.availlable
         })
-       }
-       await doctorModel.findByIdAndUpdate(docID,{
-        availlable:!docData.availlable
-       })
-       res.json({
-        success:true,
-        message:'Availibility Change'
-       })
+        res.json({
+            success: true,
+            message: 'Availibility Change'
+        })
 
     } catch (error) {
         console.log(error);
         res.json(
             {
-                success:false,
-                message:error.message
+                success: false,
+                message: error.message
             }
         )
-        
+
     }
 }
 
+const doctorList = async (req, res) => {
+    try {
+        const doctors = await doctorModel.find({}).select(['-password', '-email'])
+        res.json({
+            success: true,
+            doctors
+        })
+    } catch (error) {
+
+        res.json({
+            success: false,
+            message: error.message
+        })
+
+    }
+}
 
 export {
-    changeAvailbility
+    changeAvailbility,
+    doctorList
 }
