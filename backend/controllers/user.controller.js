@@ -137,7 +137,7 @@ const loginUser = async (req, res) => {
 const getProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-  console.log("userId:", userId);
+
 
     const userData = await userModel.findById(userId).select('-password');
 
@@ -309,10 +309,142 @@ const bookAppointment = async (req, res) => {
 };
 
 
+
+// api to get all appointments of a user
+
+
+const listappointment=async(req,res)=>{
+    try {
+        const   userId=req.user.id
+        const appointments = await appointmentModel
+                                      .find({ userId })
+                                      .populate("docId", "name image speciality address")
+                    
+        res.json({
+            success:true,
+            appointments
+        })
+
+    } catch (error) {
+        
+     console.log(error);
+     res.json({
+        success:false,
+        message:error.message
+     })
+     
+    }
+}
+
+//api for cancell appointmenta
+
+const cancellappointment = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { appointmentId } = req.body;
+
+    const appointmentData = await appointmentModel.findById(appointmentId);
+    if (!appointmentData) {
+      return res.json({
+        success: false,
+        message: "Appointment not found",
+      });
+    }
+
+    // 🔒 Check if the user is authorized to cancel
+    if (appointmentData.userId.toString() !== userId) {
+      return res.json({
+        success: false,
+        message: "Not Authorized User",
+      });
+    }
+
+    // 🛑 Prevent multiple cancellations
+    if (appointmentData.cancelled) {
+      return res.json({
+        success: false,
+        message: "Appointment is already cancelled",
+      });
+    }
+
+    // ✅ Cancel the appointment
+    await appointmentModel.findByIdAndUpdate(appointmentId, {
+      cancelled: true,
+    });
+
+    // 🩺 Release the doctor’s slot
+    const { docId, slotDate, slotTime } = appointmentData;
+
+    const doctorData = await doctorModel.findById(docId);
+    if (!doctorData) {
+      return res.json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    let slots_booked = doctorData.slots_booked || {};
+
+    // Ensure date exists
+    if (Array.isArray(slots_booked[slotDate])) {
+      slots_booked[slotDate] = slots_booked[slotDate].filter((e) => e !== slotTime);
+    }
+
+    await doctorModel.findByIdAndUpdate(docId, {
+      slots_booked,
+    });
+
+    res.json({
+      success: true,
+      message: "Successfully cancelled the appointment",
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const deleteAppointment = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { appointmentId } = req.body;
+
+    const appointment = await appointmentModel.findById(appointmentId);
+
+    if (!appointment) {
+      return res.json({ success: false, message: "Appointment not found" });
+    }
+
+    if (appointment.userId.toString() !== userId) {
+      return res.json({ success: false, message: "Unauthorized" });
+    }
+
+    // Only allow deletion if cancelled
+    if (!appointment.cancelled) {
+      return res.json({ success: false, message: "Only cancelled appointments can be deleted" });
+    }
+
+    await appointmentModel.findByIdAndDelete(appointmentId);
+
+    res.json({ success: true, message: "Cancelled appointment deleted permanently" });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+
+
 export {
     registerUser,
     loginUser,
     getProfile,
     updateProfile,
-    bookAppointment
+    bookAppointment,
+    listappointment,
+    cancellappointment,
+    deleteAppointment
 }
