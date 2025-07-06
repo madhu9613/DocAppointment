@@ -2,16 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AppContext } from "../context/AppContext.jsx";
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Currency, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+
 const Myappointment = () => {
   const { backendURL, token } = useContext(AppContext);
   const [appointments, setAppointment] = useState([]);
   const [filter, setFilter] = useState("all");
   const [deletingId, setDeletingId] = useState(null);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const formatDate = (dateStr) => {
     const [day, month, year] = dateStr.split('_');
@@ -25,7 +25,6 @@ const Myappointment = () => {
       const { data } = await axios.get(`${backendURL}/api/user/appointments`, {
         headers: { token }
       });
-
       if (data.success) {
         setAppointment(data.appointments.reverse());
       }
@@ -69,7 +68,6 @@ const Myappointment = () => {
       });
 
       if (data.success) {
-
         setTimeout(() => {
           setAppointment(prev => prev.filter(item => item._id !== appointmentId));
           setDeletingId(null);
@@ -86,10 +84,9 @@ const Myappointment = () => {
     }
   };
 
-
   const initPay = (order) => {
     const options = {
-      key: import.meta.env.VITE_RAZ_PAY_ID,  // Make sure to use correct `env` key access
+      key: import.meta.env.VITE_RAZ_PAY_ID,
       amount: order.amount,
       currency: order.currency,
       name: 'Appointment Payment',
@@ -97,25 +94,18 @@ const Myappointment = () => {
       order_id: order.id,
       receipt: order.receipt,
       handler: async (response) => {
-        console.log("Payment Success:", response);
-
         try {
-          const { data } = await axios.post(backendURL + '/api/user/verify-razorpay',
-            response,
-            { headers: { token } }
-
-          )
-
+          const { data } = await axios.post(`${backendURL}/api/user/verify-razorpay`, response, {
+            headers: { token }
+          });
           if (data.success) {
             toast.success("Payment Successfully Done");
             getUserAppointments();
-            navigate('/myappointment')
+            navigate('/myappointment');
           }
-
         } catch (error) {
           console.log(error);
-          toast.error(error.message)
-
+          toast.error(error.message);
         }
       }
     };
@@ -124,28 +114,21 @@ const Myappointment = () => {
     rzp.open();
   };
 
-
   const appointmentRazorpay = async (appointmentId) => {
     try {
       const { data } = await axios.post(
-        backendURL + '/api/user/payment-razorpay',
+        `${backendURL}/api/user/payment-razorpay`,
         { appointmentId },
-        {
-          headers: { token },
-        }
+        { headers: { token } }
       );
 
       if (data.success) {
-        initPay(data.order)
-        // You can now initialize Razorpay here using data.order details
+        initPay(data.order);
       }
-
     } catch (error) {
       console.log("Error in payment:", error);
     }
   };
-
-
 
   const filteredAppointments = appointments.filter(item => {
     if (filter === "cancelled") return item.cancelled;
@@ -153,7 +136,7 @@ const Myappointment = () => {
       const now = new Date();
       const [day, month, year] = item.slotDate.split('_');
       const appointmentDate = new Date(`${year}-${month}-${day} ${item.slotTime}`);
-      return !item.cancelled && appointmentDate >= now;
+      return !item.cancelled && appointmentDate >= now && !item.payment;
     }
     if (filter === "success") return item.payment === true;
     return true;
@@ -186,92 +169,105 @@ const Myappointment = () => {
           </button>
         ))}
       </div>
-      {
 
-        appointments.length != 0
-          ?
-          <div>
-            <AnimatePresence mode='wait' >
-              {[...filteredAppointments]
-                .sort((a, b) => a.cancelled - b.cancelled)
-                .map((item) => (
-                  <motion.div
-                    key={item._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -40 }}
-                    transition={{ duration: 0.4 }}
-                    className={`grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b border-b-stone-300 ${item.cancelled ? "bg-red-50" : "bg-white"
-                      }`}
-                  >
-                    <div
-                      onClick={() => navigate(`/appointment/${item.docId._id}`)}
-                      className="cursor-pointer"
+      {appointments.length !== 0 ? (
+        <div>
+          <AnimatePresence mode='wait'>
+            {filteredAppointments.length === 0 ? (
+              <p className='text-3xl font-bold text-blue-900 text-center mt-10 py-5'>
+                No {filter.charAt(0).toUpperCase() + filter.slice(1)} Appointment Till Now
+              </p>
+
+            ) : (
+              <>
+                {[...filteredAppointments]
+                  .sort((a, b) => a.cancelled - b.cancelled)
+                  .map((item) => (
+                    <motion.div
+                      key={item._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.4 }}
+                      className={`grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b border-b-stone-300 ${item.cancelled ? "bg-red-50" : item.payment ? "bg-green-50" : "bg-white"}`}
                     >
-                      <img className='w-32 bg-indigo-50' src={item.docId?.image} alt="" />
-                      <p className='text-neutral-800 font-semibold'>{item.docId?.name}</p>
-                    </div>
+                      <div
+                        onClick={() => navigate(`/appointment/${item.docId._id}`)}
+                        className="cursor-pointer"
+                      >
+                        <img className={`w-32 ${item.cancelled ? "bg-red-100" : item.payment ? "bg-green-100" : "bg-indigo-50"}`} src={item.docId?.image} alt="" />
+                        <p className='text-neutral-800 font-semibold'>{item.docId?.name}</p>
+                      </div>
 
-                    <div className='flex-1 text-sm text-zinc-500'>
+                      <div className='flex-1 text-sm text-zinc-500'>
+                        <p>{item.docId?.speciality}</p>
+                        <p className='text-zinc-800 font-medium mt-1'>Address:</p>
+                        <p className='text-xs'>{item.docId?.address?.line1}</p>
+                        <p className='text-xs'>{item.docId?.address?.line2}</p>
+                        <p className='text-xs mt-1'>
+                          <span className='text-sm text-neutral-800 font-medium'>Date & Time:</span>
+                          {formatDate(item.slotDate)} | {item.slotTime}
+                        </p>
+                      </div>
 
-                      <p>{item.docId?.speciality}</p>
-                      <p className='text-zinc-800 font-medium mt-1'>Address:</p>
-                      <p className='text-xs'>{item.docId?.address?.line1}</p>
-                      <p className='text-xs'>{item.docId?.address?.line2}</p>
-                      <p className='text-xs mt-1'>
-                        <span className='text-sm text-neutral-800 font-medium'>Date & Time:</span>
-                        {formatDate(item.slotDate)} | {item.slotTime}
-                      </p>
-                    </div>
-                    <div className='sm:hidden'></div>
-                    <div className='flex flex-col justify-end-safe gap-2'>
-                      {item.cancelled ? (
-                        <div className='flex items-center justify-center align-middle m-auto'>
-                          <p className='text-red-500 text-md font-bold border-red-400 py-2 px-5 rounded-lg border'>Appointment Cancelled</p>
-                          <Trash2
-                            size={18}
-                            className='text-red-400 hover:text-red-500 cursor-pointer ml-2 rounded-lg h-6 w-6 bg-red-100'
-                            onClick={() => deleteCancelledAppointment(item._id)}
-                            title="Delete"
-                          />
-                        </div>
-                      ) : item.payment ? (
-                        <div className='flex flex-col gap-2 items-center'>
-                          <p className='w-[200px] text-sm font-semibold text-green-700 text-center py-2 px-6 border border-green-500 rounded bg-green-100'>
-                            Payment Completed
-                          </p>
-                          <button
-                            onClick={() => navigate(`/appointment/${item.docId._id}`)}
-                            className='w-[200px] text-sm text-center py-2 px-6 border rounded hover:bg-blue-500 hover:text-white transition-all duration-500'
-                          >
-                            Details
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          className='w-[200px] text-sm text-stone-500 text-center sm:min-w-10/12 py-2 px-6 border rounded hover:bg-primary hover:text-white transition-all duration-500 cursor-pointer'
-                          onClick={() => appointmentRazorpay(item._id)}
-                        >
-                          Pay Online
-                        </button>
-                      )}
+                      <div className='sm:hidden'></div>
 
-                    </div>
-                  </motion.div>
-                ))}
-            </AnimatePresence>
-          </div>
-          :
-          <>  <p
-            className='text-3xl font-bold text-blue-900 text-center mt-10 py-5 '
-          >No Appointment Till Now</p>
-            <hr className='text-black w-[40vw] mx-auto' />
-          </>
-
-
-      }
-
-
+                      <div className='flex flex-col justify-end-safe gap-2'>
+                        {item.cancelled ? (
+                          <div className='flex items-center justify-center align-middle m-auto'>
+                            <p className='text-red-500 text-md font-bold border-red-400 py-2 px-5 rounded-lg border'>
+                              Appointment Cancelled
+                            </p>
+                            <Trash2
+                              size={18}
+                              className='text-red-400 hover:text-red-500 cursor-pointer ml-2 rounded-lg h-6 w-6 bg-red-100'
+                              onClick={() => deleteCancelledAppointment(item._id)}
+                              title="Delete"
+                            />
+                          </div>
+                        ) : item.payment ? (
+                          <div className='flex flex-col gap-2 items-center'>
+                            <p className='w-[200px] text-sm font-semibold text-green-700 text-center py-2 px-6 border border-green-500 rounded bg-green-100'>
+                              Payment Completed
+                            </p>
+                            <button
+                              onClick={() => navigate(`/appointment/${item.docId._id}`)}
+                              className='w-[200px] text-sm text-center py-2 px-6 border rounded hover:bg-blue-500 hover:text-white transition-all duration-500'
+                            >
+                              Details
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <button
+                              className='w-[200px] text-sm text-stone-500 text-center py-2 px-6 border rounded hover:bg-primary hover:text-white transition-all duration-500 cursor-pointer'
+                              onClick={() => appointmentRazorpay(item._id)}
+                            >
+                              Pay Online
+                            </button>
+                            <button
+                              className='w-[200px] text-sm text-stone-500 text-center py-2 px-6 border rounded hover:bg-red-500 hover:text-white transition-all duration-500 cursor-pointer'
+                              onClick={() => cancellAppointment(item._id)}
+                            >
+                              Cancel Appointment
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </motion.div>
+                  ))}
+              </>
+            )}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <>
+          <p className='text-3xl font-bold text-blue-900 text-center mt-10 py-5'>
+            No Appointment Till Now
+          </p>
+          <hr className='text-black w-[40vw] mx-auto' />
+        </>
+      )}
     </div>
   );
 };
