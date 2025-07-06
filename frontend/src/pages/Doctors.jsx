@@ -127,7 +127,7 @@ const Doctors = () => {
               onClick={() => navigate(`/appointment/${item._id}`)}
               whileHover={{ y: -8, scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer bg-white shadow-sm hover:shadow-lg transition-all duration-300 p-3"
+              className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer bg-indigo-50 shadow-sm hover:shadow-lg transition-all duration-300 p-3"
             >
               <img
                 src={item.image}
