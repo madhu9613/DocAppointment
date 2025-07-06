@@ -16,8 +16,8 @@ const Navbar = () => {
     }
     return (
         <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b border-gray-300 bg-white'>
-            <div className='flex items-center gap-2 text-xs'>
-                <img src={assets.admin_logo} className='w-36 sm:w-40 cursor-pointer' alt="" />
+            <div className='flex items-center gap-1 text-xs'>
+                <img src={assets.logo1} className='w-40 sm:w-60 cursor-pointer bg-gray-100 rounded-full flex items-center justify-center' alt="" />
                 <p className='border px-2.5 py-0.5 rounded-full border-gray-500'>{aToken ? 'Admin' : 'Doctor'}</p>
             </div>
             <button
