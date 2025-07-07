@@ -266,19 +266,25 @@ const adminDashboard = async (req, res) => {
     const doctors = await doctorModel.find({});
     const users = await userModel.find({});
     
+
     // Populate userId and docId in appointments
-    const appointments = await appointmentModel
-      .find({cancelled:false})
-      .sort({ createdAt: -1 }) // latest first
+       // Count total appointments (excluding cancelled if needed)
+    const totalAppointments = await appointmentModel.countDocuments({});
+
+    // Get latest 5 non-cancelled appointments (newest first)
+    const latestAppointments = await appointmentModel
+      .find({ cancelled: false })
+      .sort({ createdAt: -1 }) // newest first
       .limit(5)
-      .populate('userId', 'username email image') // only required fields
+      .populate('userId', 'username email image')
       .populate('docId', 'name specialization image');
 
+    // Build the dashboard data
     const dashData = {
       doctors: doctors.length,
-      appointment: appointments.length,
       patients: users.length,
-      latestAppointments: appointments
+      appointment: totalAppointments,
+      latestAppointments: latestAppointments,
     };
 
     res.json({

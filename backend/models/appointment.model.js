@@ -39,7 +39,7 @@ const appointmentSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-})
+},{ timestamps: true })
 
 
 const appointmentModel = mongoose.models.appointment || mongoose.model('appointment', appointmentSchema)

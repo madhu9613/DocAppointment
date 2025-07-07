@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Calendar Base -->
+  <rect x="10" y="15" width="44" height="35" rx="4" ry="4" fill="#5F6FFF" stroke="#ffffff" stroke-width="2"></rect>
+  <line x1="10" y1="25" x2="54" y2="25" stroke="white" stroke-width="2"></line>
+
+  <!-- Calendar Rings -->
+  <rect x="16" y="12" width="4" height="6" rx="1" fill="white"></rect>
+  <rect x="44" y="12" width="4" height="6" rx="1" fill="white"></rect>
+
+  <!-- Stethoscope U -->
+  <path d="M22 38 C22 44, 30 44, 30 38" stroke="white" stroke-width="2" fill="none"></path>
+  <circle cx="22" cy="38" r="2" fill="white"></circle>
+  <circle cx="30" cy="38" r="2" fill="white"></circle>
+  <path d="M26 38 L26 30" stroke="white" stroke-width="2"></path>
+  <circle cx="26" cy="28" r="2" fill="white"></circle>
+
+  <!-- Clock Dial in Calendar -->
+  <circle cx="42" cy="40" r="6" stroke="white" stroke-width="2" fill="none"></circle>
+  <line x1="42" y1="40" x2="42" y2="37" stroke="white" stroke-width="2"></line>
+  <line x1="42" y1="40" x2="44" y2="42" stroke="white" stroke-width="2"></line>
+</svg>
