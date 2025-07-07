@@ -206,7 +206,7 @@ const AllAppointment = () => {
       />
     </div>
 
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto min-h-[400px]">
       <div className="min-w-[1100px] space-y-1">
         <div className="grid grid-cols-12 gap-2 font-semibold text-xs border-b border-gray-300 py-2 text-gray-700 bg-gray-100 rounded">
           <p className="col-span-1">#</p>
@@ -268,7 +268,7 @@ const AllAppointment = () => {
                 ) : (
                   <button
                     onClick={() => cancelAppointment(item._id)}
-                    className="text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-700 px-2 py-1 rounded"
+                    className="text-xs bg-red-100 hover:bg-red-200 text-yellow-700 px-2 py-1 rounded"
                   >
                     Cancel
                   </button>
