@@ -7,22 +7,17 @@ const AdminContextProvider = (props) => {
     const [aToken, setaToken] = useState(() => localStorage.getItem('aToken') || '');
 
     const [doctors, setDoctors] = useState([])
-    const [appoinments,setAppointments]=useState([])
+    const [appointments, setAppointments] = useState([])
     const backendURL = import.meta.env.VITE_BACKEND_URL
 
     const getAllDoctors = async () => {
         try {
-
-
 
             const { data } = await axios.post(backendURL + '/api/admin/all-doctors', {},
                 {
                     headers: { aToken }
                 }
             )
-
-
-
 
             if (data.success) {
 
@@ -59,29 +54,26 @@ const AdminContextProvider = (props) => {
     }
 
 
-    const getAllAppointments = async () => {
-        try {
 
-           const { data } = await axios.post(backendURL + '/api/admin/all-appoinments', {},
-                {
-                    headers: { aToken }
-                }
-            )
+const getAllAppointments = async () => {
+  try {
+    const { data } = await axios.post(
+      backendURL + '/api/admin/all-appoinments',
+      {},
+      { headers: { aToken } }
+    )
 
-            if (data.success) {
-
-
-                setAppointments(data.appoinments)
-            }
-            else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-
-            toast.error(error.message)
-
-        }
+    if (data.success) {
+      console.log(data.appointments) // ✅ good debug log
+      setAppointments(data.appointments) // ✅ match spelling
+    } else {
+      toast.error(data.message)
     }
+  } catch (error) {
+    toast.error(error.message)
+  }
+}
+
 
     const value = {
         aToken, setaToken,
@@ -90,7 +82,7 @@ const AdminContextProvider = (props) => {
         getAllDoctors,
         changeAvilibility,
         getAllAppointments,
-        appoinments
+        appointments
     }
 
     return (

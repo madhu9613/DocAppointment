@@ -1,0 +1,8 @@
+Patient,Doctor,Date,Time,Status,Payment,Amount
+Madhujya,Dr. Jennifer Garcia,27 June 2025,11:30 AM,Pending,Not Paid,3440
+Madhujya,Dr. Jennifer Garcia,27 June 2025,12:00 PM,Pending,Not Paid,3440
+Madhujya,Dr. Jennifer Garcia,27 June 2025,01:00 PM,Pending,Not Paid,3440
+Madhujya,Dr. Jennifer Garcia,27 June 2025,02:30 PM,Pending,Not Paid,3440
+mady,Dr. Emily Larson,8 July 2025,12:00 PM,Pending,Paid,1978
+mady,Dr. Sarah Pate,10 July 2025,10:30 AM,Pending,Paid,2580
+mady,Dr. Emily Larson,9 July 2025,11:00 AM,Pending,Not Paid,1978
