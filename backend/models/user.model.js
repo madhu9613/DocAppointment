@@ -37,9 +37,6 @@ const userSchema=new mongoose.Schema({
         default:"000-000-0000"
     }
 
-
-  
-
 })
 
 userSchema.pre("save",async function (next) {
