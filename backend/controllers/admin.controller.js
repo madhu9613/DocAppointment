@@ -3,6 +3,7 @@ import {v2 as cloudinary} from "cloudinary"
 import doctorModel from "../models/doctor.model.js";
 import jwt from "jsonwebtoken"
 import appointmentModel from "../models/appointment.model.js";
+import userModel from "../models/user.model.js";
 //api for adding doctors
 
 const addDoctor = async (req, res) => {
@@ -257,11 +258,49 @@ const deleteAppointment = async (req, res) => {
 };
 
 
+//get dashboard data for admin panel
+
+
+const adminDashboard = async (req, res) => {
+  try {
+    const doctors = await doctorModel.find({});
+    const users = await userModel.find({});
+    
+    // Populate userId and docId in appointments
+    const appointments = await appointmentModel
+      .find({cancelled:false})
+      .sort({ createdAt: -1 }) // latest first
+      .limit(5)
+      .populate('userId', 'username email image') // only required fields
+      .populate('docId', 'name specialization image');
+
+    const dashData = {
+      doctors: doctors.length,
+      appointment: appointments.length,
+      patients: users.length,
+      latestAppointments: appointments
+    };
+
+    res.json({
+      success: true,
+      dashData
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
 export {addDoctor,
   loginAdmin,
   allDoctors,
 allAppointments,
 cancellappointment,
-deleteAppointment
+deleteAppointment,
+adminDashboard
 
 }
