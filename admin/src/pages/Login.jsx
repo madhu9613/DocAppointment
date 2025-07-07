@@ -3,39 +3,49 @@ import { assets } from '../assets/assets_admin/assets'
 import { AdminContext } from '../context/AdminContext'
 import axios from "axios"
 import { toast } from 'react-toastify'
+import { DoctorContext } from '../context/DoctorContext'
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [state, setState] = useState('Admin')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { setaToken, backendURL } = useContext(AdminContext)
+    const { setDToken } = useContext(DoctorContext)
+    const navigate = useNavigate();
 
-    
- 
+
     const onSubmitHandler = async (event) => {
         event.preventDefault()
 
-    
+
 
         const loginUrl = `${backendURL}/api/${state.toLowerCase()}/login`
-       
+
 
         try {
             const { data } = await axios.post(loginUrl, { email, password })
 
             if (data.success) {
-                console.log("✅ Login Successful")
-                localStorage.setItem('aToken',data.token)
-                setaToken(data.token)
-                toast.success(data.message)
-               
-            } else {
-            toast.error(data.message)
+                toast.success(data.message);
+                if (state === "Admin") {
+                    localStorage.setItem('aToken', data.token);
+                    setaToken(data.token);
+                    navigate('/admin/dashboard');
+                } else {
+                    localStorage.setItem('dToken', data.token);
+                    setDToken(data.token);
+                    navigate('/doctor/dashboard');
+                }
+            }
+            else{
+                toast.error(data.message || "Invalid")
             }
 
+
         } catch (error) {
-          console.log("error occured in login",error);
-          
+            console.log("error occured in login", error);
+           toast.error(error.message)
         }
     }
 

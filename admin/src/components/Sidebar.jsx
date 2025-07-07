@@ -7,7 +7,7 @@ const Sidebar = () => {
   const { aToken } = useContext(AdminContext)
 
   const navItems = [
-    { to: '/admin-dashboard', icon: assets.home_icon, label: 'Dashboard' },
+    { to: '/admin/dashboard', icon: assets.home_icon, label: 'Dashboard' },
     { to: '/all-appointments', icon: assets.appointment_icon, label: 'Appointment' },
     { to: '/add-doctor', icon: assets.add_icon, label: 'Add Doctor' },
     { to: '/doctor-list', icon: assets.people_icon, label: 'Doctors List' },

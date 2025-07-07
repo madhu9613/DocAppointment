@@ -1,6 +1,6 @@
 import doctorModel from "../models/doctor.model.js";
 import mongoose from "mongoose";
-
+import jwt from 'jsonwebtoken'
 const changeAvailbility = async (req, res) => {
     try {
 
@@ -58,7 +58,52 @@ const doctorList = async (req, res) => {
     }
 }
 
+const loginDoctor = async (req, res) => {
+
+    try {
+        const { email, password } = req.body
+        const doctor = await doctorModel.findOne({ email })
+
+        if (!doctor) {
+            return res.json({
+                success: false,
+                message: "Doctor Not Found || add the doctor first"
+            })
+        }
+
+        const isValid = doctor.ispasswordCorrect(password)
+        if (!isValid) {
+            return res.json({
+                success: false,
+                message: "Invalid Credential"
+            })
+        }
+
+        const token = jwt.sign({ id: doctor._id },
+
+            process.env.JWT_SEC
+        )
+
+
+        res.json({
+            success:true,
+            message:"Login Successfully",
+            token
+        })
+
+
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success: false,
+            message: error.message
+        })
+
+    }
+}
+
 export {
     changeAvailbility,
-    doctorList
+    doctorList,
+    loginDoctor
 }
